@@ -34,4 +34,10 @@ public class SortingTests
         Assert.Equal(_ordered, _array);
     }
 
+    [Fact]
+    public void ShellSortTest()
+    {
+        ShellSort.Sort(_array);
+        Assert.Equal(_ordered, _array);
+    }
 }

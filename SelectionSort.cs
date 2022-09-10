@@ -1,4 +1,6 @@
-﻿namespace SortingAlgorithms;
+﻿using System.Xml;
+
+namespace SortingAlgorithms;
 
 public static class SelectionSort
 {
