@@ -40,4 +40,11 @@ public class SortingTests
         ShellSort.Sort(_array);
         Assert.Equal(_ordered, _array);
     }
+
+    [Fact]
+    public void MergeSortTest()
+    {
+        MergeSort.Sort(_array);
+        Assert.Equal(_ordered, _array);
+    }
 }
