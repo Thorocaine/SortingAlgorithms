@@ -9,6 +9,6 @@ public static class Common
     {
         var rnd = new Random();
         var max = length * 2;
-        return Enumerable.Range(0, length).Select(_ => rnd.Next(0, max)).ToArray();
+        return Enumerable.Range(0, length).Select(_ => rnd.Next(0, max)).Distinct().ToArray();
     }
 }

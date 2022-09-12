@@ -55,28 +55,19 @@ public class SortingTests
         Assert.Equal(_ordered, sorted);
     }
 
+    
     [Fact]
     public void QuickSortPivotOnFirstTest()
     {
-        var uns = new [] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-        QuickSort.Sort(uns, QuickSort.Pivot.First);
-        Assert.Equal(new [] {1, 2, 3, 4, 5, 6, 7, 8,9, 10}, uns);
-    }
-
-    [Fact]
-    public void QuickSortPivotOnMiddleTest()
-    {
-        var uns = new [] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-        QuickSort.Sort(uns, QuickSort.Pivot.Middle);
-        Assert.Equal(new [] {1, 2, 3, 4, 5, 6, 7, 8,9, 10}, uns);
+        QuickSort.Sort(_array, QuickSort.Pivot.First);
+        Assert.Equal(_ordered, _array);
     }
 
     [Fact]
     public void QuickSortPivotOnLastTest()
     {
-        var uns = new [] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-        QuickSort.Sort(uns, QuickSort.Pivot.First);
-        Assert.Equal(new [] {1, 2, 3, 4, 5, 6, 7, 8,9, 10}, uns);
+        QuickSort.Sort(_array, QuickSort.Pivot.Last);
+        Assert.Equal(_ordered, _array);
     }
     
 }

@@ -4,95 +4,91 @@ namespace SortingAlgorithms;
 
 public static class QuickSort
 {
-    public enum Pivot
-    {
-        First,
-        Middle,
-        Last,
-    } //, Last, MedianOfThree, Random } 
+    public enum Pivot { First, Last }
 
-    delegate int Partition(Span<int> array); 
+    public static void Sort(int[] array, Pivot strategy) => Sort(array, GetPartition(strategy), 0, array.Length - 1);
 
-    public static void Sort(int[] array, Pivot pivot)
+    delegate int Partition(int[] array, int low, int high);
+
+    static void Swap(int[] arr, int i, int j)
     {
-        quickSort(array, GetPartition(pivot));
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
     }
 
-    static int PartitionMiddle(Span<int> array)
+    static int PartitionLast(int[] arr, int low, int high)
     {
-        int left = 0; int right = array.Length - 1;
-        int i = left, j = right;
-
-        int tmp;
-
-        var pivot = array[(left + right) / 2];
-
-
-        while (i <= j)
+        int pivot = arr[high];
+        int i = (low - 1);
+        for (int j = low; j <= high - 1; j++)
         {
-            while (array[i] < pivot)
-
-                i++;
-
-            while (array[j] > pivot)
-
-                j--;
-
-            if (i <= j)
+            if (arr[j] < pivot)
             {
-                tmp = array[i];
-
-                array[i] = array[j];
-
-                array[j] = tmp;
-
                 i++;
-
-                j--;
+                Swap(arr, i, j);
             }
         }
-
-        
-
-
-        return i;
+        Swap(arr, i + 1, high);
+        return (i + 1);
     }
 
-    static int PartitionLast(Span<int> array)
+    static int PartitionFirst(int[] arr, int left, int right)
     {
-        int start = 0; int end = array.Length - 1;
-            int pivot = array[end]; // pivot element  
-            int i = (start - 1);  
-  
-            for (int j = start; j <= end - 1; j++)  
-            {  
-                // If current element is smaller than the pivot  
-                if (array[j] < pivot)  
-                {  
-                    i++; // increment index of smaller element  
-                    (array[i], array[j]) = (array[j], array[i]);
-                }  
-            }  
-            (array[i+1], array[end]) = (array[end], array[i+1]);
-            return (i + 1);  
-        
-    }
-    
-    static void quickSort(Span<int> array, Partition partition)
-    {
-        var index = partition(array);
-        if (index > 1)
+        int pivot = arr[left];
+        while (true) 
         {
-            var leftArray = array[..index];
-            quickSort(leftArray, partition);
-        }
 
-        if (index < array.Length - 1)
-        {
-            var rightArray = array[(index+1)..];
-            quickSort(rightArray, partition);
+            while (arr[left] < pivot) 
+            {
+                left++;
+            }
+
+            while (arr[right] > pivot)
+            {
+                right--;
+            }
+
+            if (left < right)
+            {
+                if (arr[left] == arr[right]) return right;
+
+                int temp = arr[left];
+                arr[left] = arr[right];
+                arr[right] = temp;
+
+
+            }
+            else 
+            {
+                return right;
+            }
         }
     }
+
+
+    static void Sort(int[] arr, Partition partition, int low, int high)
+    {
+        if (low < high)
+        {
+            // pi is partitioning index, arr[p]
+            // is now at right place 
+            int pi = partition(arr, low, high);
+
+            // Separately sort elements before
+            // partition and after partition
+            Sort(arr, partition, low, pi - 1);
+            Sort(arr, partition, pi + 1, high);
+        }
+    }
+
+
+    static Partition GetPartition(Pivot pivot) =>
+        pivot switch
+        {
+            Pivot.First => PartitionFirst,
+            _ => PartitionLast,           
+        };
 
     public static IEnumerable<int> LazyQuickSort(this IEnumerable<int> list)
     {
@@ -101,15 +97,5 @@ public static class QuickSort
         var left = list.Skip(1).Where(x => x < pivot).LazyQuickSort();
         var right = list.Skip(1).Where(x => x >= pivot).LazyQuickSort();
         return left.Concat(new[] {pivot}).Concat(right);
-    }
-
-    static Partition GetPartition(Pivot pivot)
-    {
-        return pivot switch
-        {
-            Pivot.Middle => PartitionMiddle,
-            Pivot.Last => PartitionLast,
-            _ => PartitionMiddle,
-        };
     }
 }
