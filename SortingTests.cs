@@ -70,4 +70,11 @@ public class SortingTests
         Assert.Equal(_ordered, _array);
     }
     
+    [Fact]
+    public void QuickSortPivotOnMiddleTest()
+    {
+        QuickSort.Sort(_array, QuickSort.Pivot.Middle);
+        Assert.Equal(_ordered, _array);
+    }
+
 }
