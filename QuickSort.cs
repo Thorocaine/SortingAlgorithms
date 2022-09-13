@@ -4,54 +4,59 @@ namespace SortingAlgorithms;
 
 public static class QuickSort
 {
-    public enum Pivot { First, Middle, Last, TwentyFive, SeventyFive }
-
-    public static void Sort(int[] array, Pivot strategy) => Sort(array, GetPivotFunc(strategy));
-
-    delegate int GetPivot(Span<int> array);
-
-    static int Partition(Span<int> array, GetPivot getPivot)
+    public enum Pivot
     {
-        var pivot = getPivot(array);
-        int left = 0, right = array.Length - 1;
-        while (true) 
+        First,
+        Middle,
+        Last,
+        TwentyFive,
+        SeventyFive
+    }
+
+    public static void Sort(int[] array, Pivot pivot) => Sort(array, GetPivotFunc(pivot), 0, array.Length - 1);
+
+    public static void SortParallel(int[] array, Pivot pivot) =>
+        SortParallel(array, GetPivotFunc(pivot), 0, array.Length - 1);
+
+    static void Sort(int[] array, GetPivot getPivot, int lower, int upper)
+    {
+        if (lower >= upper) return;
+        var pivot = Partition(array, getPivot, lower, upper);
+        if (pivot > 1) Sort(array, getPivot, lower, pivot - 1);
+        if (pivot + 1 < upper) Sort(array, getPivot, pivot + 1, upper);
+    }
+
+    static void SortParallel(int[] array, GetPivot getPivot, int lower, int upper)
+    {
+        if (lower >= upper) return;
+        if (upper - lower <= 1000) { Sort(array, getPivot, lower, upper); return; }
+        var pivot = Partition(array, getPivot, lower, upper);
+        Parallel.Invoke(
+            () => { if (pivot > 1) SortParallel(array, getPivot, lower, pivot - 1); },
+            () => { if (pivot + 1 < upper) SortParallel(array, getPivot, pivot + 1, upper); });
+    }
+
+    static int Partition(int[] array, GetPivot getPivot, int lower, int upper)
+    {
+        var pivot = getPivot(array, lower, upper);
+        while (true)
         {
-            while (array[left] < pivot) left++;
-            while (array[right] > pivot) right--;
-            if (left < right)
-            {
-                if (array[left] == array[right]) return right;
-                (array[left], array[right]) = (array[right], array[left]);
-            }
-            else return right;
+            while (array[lower] < pivot) lower++;
+            while (array[upper] > pivot) upper--;
+            if (lower < upper) (array[upper], array[lower]) = (array[lower], array[upper]);
+            else return upper;
         }
     }
 
-
-    static void Sort(Span<int> array, GetPivot getPivot)
-    {
-        if (array.Length <= 1) return;
-        var pi = Partition(array, getPivot);
-        Sort(array[..pi], getPivot);
-        Sort(array[(pi + 1)..], getPivot);
-    }
+    delegate int GetPivot(int[] array, int lower, int upper);
 
     static GetPivot GetPivotFunc(Pivot pivot) =>
         pivot switch
         {
-            Pivot.First => (a) => a[0],
-            Pivot.Last => (a) => a[^1],
-            Pivot.TwentyFive => (a) => a[(a.Length-1) / 4], 
-            Pivot.SeventyFive => (a) => a[(a.Length-1) * 3 / 4],
-            _ => (a) => a[(a.Length-1) / 2],
+            Pivot.First => (a, l, u) => a[l],
+            Pivot.Last => (a, l, u) => a[u],
+            Pivot.TwentyFive => (a, l, u) => a[l + (u - l) / 4],
+            Pivot.SeventyFive => (a, l, u) => a[l + (u - l) * 3 / 4],
+            _ => (a, l, u) => a[l + (u - l) / 2],
         };
-
-    public static IEnumerable<int> LazyQuickSort(this IEnumerable<int> list)
-    {
-        if (!list.Skip(1).Any()) return list;
-        var pivot = list.First();
-        var left = list.Skip(1).Where(x => x < pivot).LazyQuickSort();
-        var right = list.Skip(1).Where(x => x >= pivot).LazyQuickSort();
-        return left.Concat(new[] {pivot}).Concat(right);
-    }
 }

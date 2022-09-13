@@ -47,47 +47,16 @@ public class SortingTests
         MergeSort.Sort(_array);
         Assert.Equal(_ordered, _array);
     }
-
-    [Fact]
-    public void QuickSortLazyTest()
+ 
+    [Theory]
+    [InlineData(QuickSort.Pivot.First)]
+    [InlineData(QuickSort.Pivot.Middle)]
+    [InlineData(QuickSort.Pivot.Last)]
+    [InlineData(QuickSort.Pivot.SeventyFive)]
+    [InlineData(QuickSort.Pivot.TwentyFive)]
+    public void QuickSortPivotTest(QuickSort.Pivot pivot)
     {
-        var sorted = _array.LazyQuickSort().ToArray();
-        Assert.Equal(_ordered, sorted);
-    }
-
-    
-    [Fact]
-    public void QuickSortPivotOnFirstTest()
-    {
-        QuickSort.Sort(_array, QuickSort.Pivot.First);
-        Assert.Equal(_ordered, _array);
-    }
-
-    [Fact]
-    public void QuickSortPivotOnLastTest()
-    {
-        QuickSort.Sort(_array, QuickSort.Pivot.Last);
-        Assert.Equal(_ordered, _array);
-    }
-    
-    [Fact]
-    public void QuickSortPivotOnMiddleTest()
-    {
-        QuickSort.Sort(_array, QuickSort.Pivot.Middle);
-        Assert.Equal(_ordered, _array);
-    }
-
-    [Fact]
-    public void QuickSortPivotOnTwentyFiveTest()
-    {
-        QuickSort.Sort(_array, QuickSort.Pivot.Middle);
-        Assert.Equal(_ordered, _array);
-    }
-
-    [Fact]
-    public void QuickSortPivotOnSeventyFiveTest()
-    {
-        QuickSort.Sort(_array, QuickSort.Pivot.Middle);
+        QuickSort.Sort(_array, pivot);
         Assert.Equal(_ordered, _array);
     }
 }
