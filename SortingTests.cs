@@ -2,10 +2,9 @@
 
 namespace SortingAlgorithms;
 
-public class SortingTests
+public partial class SortingTests
 {
-    readonly int[] _array;
-    readonly int[] _ordered;
+    readonly int[] _array,  _ordered;
 
     public SortingTests()
     {
@@ -45,18 +44,6 @@ public class SortingTests
     public void MergeSortTest()
     {
         MergeSort.Sort(_array);
-        Assert.Equal(_ordered, _array);
-    }
- 
-    [Theory]
-    [InlineData(QuickSort.Pivot.First)]
-    [InlineData(QuickSort.Pivot.Middle)]
-    [InlineData(QuickSort.Pivot.Last)]
-    [InlineData(QuickSort.Pivot.SeventyFive)]
-    [InlineData(QuickSort.Pivot.TwentyFive)]
-    public void QuickSortPivotTest(QuickSort.Pivot pivot)
-    {
-        QuickSort.Sort(_array, pivot);
         Assert.Equal(_ordered, _array);
     }
 }

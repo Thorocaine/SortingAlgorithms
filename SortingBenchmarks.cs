@@ -3,7 +3,7 @@
 namespace SortingAlgorithms;
 
 [MemoryDiagnoser(false)]
-public class QuickSortBenchmarks
+public partial class QuickSortBenchmarks
 {
     [Params((int)1e1,(int)1e2, (int)1e3, (int)1e4, (int)1e5, (int)1e6, (int)1e7)] 
     public int n;
@@ -51,22 +51,6 @@ public class QuickSortBenchmarks
         if (_data.Length > 10000) return;
         MergeSort.Sort(_data);
     }
-
-    [Benchmark]
-    [Arguments(QuickSort.Pivot.First)]
-    [Arguments(QuickSort.Pivot.Middle)]
-    [Arguments(QuickSort.Pivot.Last)]
-    [Arguments(QuickSort.Pivot.SeventyFive)]
-    [Arguments(QuickSort.Pivot.TwentyFive)]
-    public void QuickSortTest(QuickSort.Pivot pivotAt) => QuickSort.Sort(_data, pivotAt);
-
-    [Benchmark]
-    [Arguments(QuickSort.Pivot.First)]
-    [Arguments(QuickSort.Pivot.Middle)]
-    [Arguments(QuickSort.Pivot.Last)]
-    [Arguments(QuickSort.Pivot.SeventyFive)]
-    [Arguments(QuickSort.Pivot.TwentyFive)]
-    public void ParallelQuickSortTest(QuickSort.Pivot pivotAt) => QuickSort.SortParallel(_data, pivotAt);
 
     [Benchmark]
     public void FrameworkSort() => Array.Sort(_data);

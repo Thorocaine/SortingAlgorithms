@@ -2,7 +2,7 @@
 
 namespace SortingAlgorithms;
 
-public static class QuickSort
+public static partial class QuickSort
 {
     public enum Pivot
     {
@@ -13,10 +13,10 @@ public static class QuickSort
         SeventyFive
     }
 
-    public static void Sort(int[] array, Pivot pivot) => Sort(array, GetPivotFunc(pivot), 0, array.Length - 1);
+    public static void Sort(int[] array, Pivot pivot) => 
+        Sort(array, GetPivotFunc(pivot), 0, array.Length - 1);
 
-    public static void SortParallel(int[] array, Pivot pivot) =>
-        SortParallel(array, GetPivotFunc(pivot), 0, array.Length - 1);
+    
 
     static void Sort(int[] array, GetPivot getPivot, int lower, int upper)
     {
@@ -26,15 +26,7 @@ public static class QuickSort
         if (pivot + 1 < upper) Sort(array, getPivot, pivot + 1, upper);
     }
 
-    static void SortParallel(int[] array, GetPivot getPivot, int lower, int upper)
-    {
-        if (lower >= upper) return;
-        if (upper - lower <= 1000) { Sort(array, getPivot, lower, upper); return; }
-        var pivot = Partition(array, getPivot, lower, upper);
-        Parallel.Invoke(
-            () => { if (pivot > 1) SortParallel(array, getPivot, lower, pivot - 1); },
-            () => { if (pivot + 1 < upper) SortParallel(array, getPivot, pivot + 1, upper); });
-    }
+
 
     static int Partition(int[] array, GetPivot getPivot, int lower, int upper)
     {
